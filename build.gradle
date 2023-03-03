@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation 'org.bytedeco:systems-platform:1.5.8'
     implementation 'net.java.dev.jna:jna-platform:5.13.0'
-    implementation 'com.github.jnr:jnr-ffi:2.1.9'
+    implementation 'com.github.jnr:jnr-ffi:2.2.13'
 }
 
 // foreign stuff is in preview now, not incubating
