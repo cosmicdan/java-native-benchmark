@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.*;
 
-import com.zakgof.jnbenchmark.bridj.BridjBenchmark;
 import com.zakgof.jnbenchmark.jna.JnaBenchmark;
 import com.zakgof.jnbenchmark.jna.JnaDirectBenchmark;
 import com.zakgof.jnbenchmark.jni.JavaCppStock;
@@ -20,7 +19,6 @@ public class JmhCallOnly {
 
 	private PanamaBenchmark panama;
 	private JavaCppStock javacppjni;
-	private BridjBenchmark bridj;
 	private JnaBenchmark jna;
 	private JnaDirectBenchmark jnaDirect;
 	private JnrBenchmark jnr;
@@ -29,7 +27,6 @@ public class JmhCallOnly {
 	public void setup() {
 		panama = new PanamaBenchmark();
 		javacppjni = new JavaCppStock();
-		bridj = new BridjBenchmark();
 		jna = new JnaBenchmark();
 		jnaDirect = new JnaDirectBenchmark();
 		jnr = new JnrBenchmark();
@@ -48,11 +45,6 @@ public class JmhCallOnly {
 	@Benchmark
 	public void panama() throws InterruptedException {
 		panama.callOnly();
-	}
-
-	@Benchmark
-	public void bridj() throws InterruptedException {
-		bridj.callOnly();
 	}
 
 	@Benchmark
