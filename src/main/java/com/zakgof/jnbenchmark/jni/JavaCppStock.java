@@ -1,8 +1,8 @@
 package com.zakgof.jnbenchmark.jni;
 
 import org.bytedeco.javacpp.Pointer;
-import org.bytedeco.javacpp.windows;
-import org.bytedeco.javacpp.windows.SYSTEMTIME;
+import org.bytedeco.systems.global.windows;
+import org.bytedeco.systems.windows.SYSTEMTIME;
 
 public class JavaCppStock {
 
