@@ -6,7 +6,7 @@ plugins {
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
