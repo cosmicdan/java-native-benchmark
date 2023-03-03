@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id "me.champeau.gradle.jmh" version "0.5.3"
+    id "me.champeau.jmh" version "0.7.0"
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -11,15 +11,32 @@ repositories {
 
 dependencies {
     implementation 'org.bytedeco.javacpp-presets:systems-platform:1.4.4'
-    implementation 'org.openjdk.jmh:jmh-core:1.21'
-    implementation 'org.openjdk.jmh:jmh-generator-annprocess:1.21'
     implementation 'net.java.dev.jna:jna-platform:5.3.1'
     implementation 'com.github.jnr:jnr-ffi:2.1.9'
     implementation 'com.nativelibs4java:bridj:0.7.0'
-    implementation files('panama/kernel32.h.jar')
+}
+
+// foreign stuff is in preview now, not incubating
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+	options.compilerArgs += "--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED"
+}
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+	jvmArgs += '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED'
+}
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
+	jvmArgs += '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED'
+	jvmArgs += '--enable-native-access=ALL-UNNAMED'
+}
+
+// additional fixes for jmh
+jmhRunBytecodeGenerator {
+    getJvmArgs().add("--enable-preview")
 }
 
 jmh {
-    duplicateClassesStrategy = 'warn'
-    jvmArgs = ['-Djmh.separateClasspathJAR=true']
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
+    jvmArgsAppend = ['-Djmh.separateClasspathJAR=true', '--enable-preview', '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED', '--enable-native-access=ALL-UNNAMED']
 }

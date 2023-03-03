@@ -1,37 +1,82 @@
 package com.zakgof.jnbenchmark.panama;
 
-import java.foreign.Scope;
-import java.foreign.memory.LayoutType;
-import java.foreign.memory.Pointer;
+import jdk.internal.foreign.PlatformLayouts;
 
-import com.zakgof.jnbenchmark.panama.kernel32._SYSTEMTIME;
+import java.lang.foreign.*;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
 
 public class PanamaBenchmark {
+	private final Linker linker;
+	private final MemoryLayout structSYSTEMTIME;
+	private final VarHandle wSecondGetter;
 
-	private final Scope scope;
-	private LayoutType<_SYSTEMTIME> systemtimeLayout;
-	private Pointer<_SYSTEMTIME> preallocatedSystemTime;
+	// for cached test(s); allWithPreLayout for Panama
+	private final MemorySession sessionCached;
+	private final MethodHandle getSystemTimeCached;
+	private final MemorySegment systemTimeOutPointerCached;
 
 	public PanamaBenchmark() {
-		scope = kernel32_h.scope().fork();
-		systemtimeLayout = LayoutType.ofStruct(_SYSTEMTIME.class);
-		preallocatedSystemTime = scope.allocate(systemtimeLayout);
+		linker = Linker.nativeLinker();
+		structSYSTEMTIME = MemoryLayout.structLayout(
+				PlatformLayouts.Win64.C_SHORT.withName("wYear"),
+				PlatformLayouts.Win64.C_SHORT.withName("wMonth"),
+				PlatformLayouts.Win64.C_SHORT.withName("wDayOfWeek"),
+				PlatformLayouts.Win64.C_SHORT.withName("wDay"),
+				PlatformLayouts.Win64.C_SHORT.withName("wHour"),
+				PlatformLayouts.Win64.C_SHORT.withName("wMinute"),
+				PlatformLayouts.Win64.C_SHORT.withName("wSecond"),
+				PlatformLayouts.Win64.C_SHORT.withName("wMilliseconds")
+		).withName("SYSTEMTIME");
+		wSecondGetter = structSYSTEMTIME.varHandle(MemoryLayout.PathElement.groupElement("wSecond"));
+
+		// for cached test(s)
+		sessionCached = MemorySession.openConfined(); // NOTE: must be closed when done!
+		getSystemTimeCached = getMethodHandle(getKernel32(sessionCached));
+		systemTimeOutPointerCached = sessionCached.allocate(structSYSTEMTIME);
 	}
 
+	public void dispose() {
+		sessionCached.close();
+	}
+
+	private SymbolLookup getKernel32(MemorySession session) {
+		return SymbolLookup.libraryLookup("Kernel32", session);
+	}
+
+	private MethodHandle getMethodHandle(SymbolLookup kernel32) {
+		return linker.downcallHandle(
+				kernel32.lookup("GetSystemTime").orElseThrow(),
+				FunctionDescriptor.ofVoid(ValueLayout.ADDRESS));
+	}
+
+	/**
+	 * Perform a complete "Get Seconds" call, that is with all references, holders and handles constructed then disposed.
+	 */
 	public short all() {
-		_SYSTEMTIME systemtime = scope.allocateStruct(_SYSTEMTIME.class);
-		kernel32_h.GetSystemTime(systemtime.ptr());
-		return systemtime.wSecond$get();
+		try {
+			MemorySegment systemTimeOutPointer = sessionCached.allocate(structSYSTEMTIME);
+			getSystemTimeCached.invokeExact((Addressable) systemTimeOutPointer);
+			return (short) wSecondGetter.get(systemTimeOutPointer);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public short allWithPreLayout() {
-		Pointer<_SYSTEMTIME> systemtime = scope.allocate(systemtimeLayout);
-		kernel32_h.GetSystemTime(systemtime);
-		return systemtime.get().wSecond$get();
+		try {
+			getSystemTimeCached.invokeExact((Addressable) systemTimeOutPointerCached);
+			return (short) wSecondGetter.get(systemTimeOutPointerCached);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void callOnly() {
-		kernel32_h.GetSystemTime(preallocatedSystemTime);
+		try {
+			getSystemTimeCached.invokeExact((Addressable) systemTimeOutPointerCached);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
 	}
-
 }

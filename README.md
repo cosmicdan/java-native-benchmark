@@ -53,7 +53,7 @@ For comparison, the same problem was implemented with JDK's `java.util.Date`, `j
 
 ## How to run ##
 
-Make sure that gradle is configured with a JDK 16 (or later) and run
+Make sure that gradle is configured (e.g. PATH and/or JAVA_HOME) with a JDK 19 (or later) and run
 ````
 gradlew clean jmh
 ````

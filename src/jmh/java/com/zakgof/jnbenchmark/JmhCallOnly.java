@@ -2,16 +2,7 @@ package com.zakgof.jnbenchmark;
 
 import java.util.concurrent.TimeUnit;
 
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Level;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.annotations.*;
 
 import com.zakgof.jnbenchmark.bridj.BridjBenchmark;
 import com.zakgof.jnbenchmark.jna.JnaBenchmark;
@@ -42,6 +33,11 @@ public class JmhCallOnly {
 		jna = new JnaBenchmark();
 		jnaDirect = new JnaDirectBenchmark();
 		jnr = new JnrBenchmark();
+	}
+
+	@TearDown
+	public void dispose() {
+		panama.dispose();
 	}
 
 	@Benchmark
