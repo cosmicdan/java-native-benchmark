@@ -1,0 +1,19 @@
+Benchmark                                         Mode  Cnt     Score      Error  Units
+JmhGetSystemTimeSeconds.jnaDirect_alloc           avgt   50  5036.785 ±  431.320  ns/op
+JmhGetSystemTimeSeconds.jna_alloc                 avgt   50  4849.615 ±  444.537  ns/op
+JmhGetSystemTimeSeconds.bridj_alloc               avgt   50  1981.193 ± 1051.236  ns/op
+JmhGetSystemTimeSeconds.panama_alloc              avgt   50   602.001 ±  150.395  ns/op
+JmhGetSystemTimeSeconds.jnr_alloc                 avgt   50   561.893 ±   66.970  ns/op
+JmhGetSystemTimeSeconds.jni_javaCpp_alloc         avgt   50   520.551 ±   15.298  ns/op
+JmhGetSystemTimeSeconds.java_calendar_alloc       avgt   50   244.422 ±   25.956  ns/op
+JmhGetSystemTimeSeconds.jni_javaCpp_preAlloc      avgt   50    99.346 ±    5.057  ns/op
+JmhGetSystemTimeSeconds.panama_preAlloc           avgt   50    88.126 ±    0.508  ns/op
+JmhGetSystemTimeSeconds.java_date_alloc           avgt   50    87.933 ±    2.997  ns/op
+JmhGetSystemTimeSeconds.java_localDateTime_alloc  avgt   50    61.409 ±    1.749  ns/op
+JmhGetSystemTimeSeconds.java_systemMs_preAlloc    avgt   50     5.772 ±    0.104  ns/op
+JmhGetter.panama_preAlloc                         avgt   50    21.367 ±    0.133  ns/op
+JmhGetter.jni_javaCpp_preAlloc                    avgt   50    16.661 ±    0.123  ns/op
+JmhGetter.java_preAlloc                           avgt   50     0.856 ±    0.002  ns/op
+JmhSetter.panama_preAlloc                         avgt   50    27.536 ±    3.404  ns/op
+JmhSetter.jni_javaCpp_preAlloc                    avgt   50    19.441 ±    0.179  ns/op
+JmhSetter.java_preAlloc                           avgt   50     0.862 ±    0.002  ns/op
