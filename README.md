@@ -1,9 +1,30 @@
 # java-native-benchmark
 JMH performance benchmark for Java's native call APIs: [JNI](https://docs.oracle.com/en/java/javase/12/docs/specs/jni/index.html) (via [JavaCpp](https://github.com/bytedeco/javacpp) ), [JNA](https://github.com/java-native-access/jna), [JNR](https://github.com/jnr/jnr-ffi), [Bridj](https://github.com/nativelibs4java/BridJ) and [Project Panama](http://openjdk.java.net/projects/panama/) Foreign Memory Access and Foreign Linker APIs.
 
-Updated April 9, 2021
+Original README last updated April 9, 2021
+CosmicDan updates 2023-03-03
+
+## Fork changes
+This fork has been updated and modified. The changes since original work are as follows:
+ - Updated to Java 19 (new requirement);
+ - Panama tests completely rewritten;
+ - Updated JavaCpp, JNA and JNR to latest releases (as of writing);
+ - Removed "NoCall" benchmarks, not as useful as new benchmarks
+ - Renamed existing benchmarks to `JmhGetSystemTimeSeconds_*_alloc` and `_preAlloc`, see "Types of benchmarks" below for details
+ - Optimized existing tests where available
+ - Added some new benchmarks
 
 ## Benchmark operation ##
+
+### Types of benchmarks
+Each benchmarked function may consist of either/any/all of the following:
+ - `_alloc`: Native calls will (de)allocate memory every time it is called. JVM calls will consist of object creation. `alloc` might be useful for judging "one shot" method calls.
+ - `_preAlloc`: Native calls use a pre-allocated memory space. JVM calls have zero object creation. `preAlloc` might be useful for judging function calls that you can afford to reserve permanent space in memory for (or do your own memory management).
+
+### TODO: More readme updates for new stuff (much of below is out of date)
+
+### GetSystemTime(out)void function
+
 Get seconds from the current system time using native call to Windows API function `GetSystemTime` provided by kernel32.dll:
 
 ````cpp
@@ -27,7 +48,8 @@ Each implementation will
 2. call native method `GetSystemTime` passing the allocated memory
 3. extract and return the value from the field `wSecond`
 
-In a separate benchmark I measured performance of the native call only  (item 2).
+~~In a separate benchmark I measured performance of the native call only  (item 2).~~
+… this information is no longer relevant. Refer to "Types of Benchmarks" above.
 
 **JNI**     
 JNI is a Java's standard way to call native code present in JDK since its early versions. JNI requires building a native stub as an adapter between Java and native library, so is considered low-level. Helper tools have been developed in order to automate and simplify native stub generation. Here I used [JavaCpp](https://github.com/bytedeco/javacpp), the project is known for prebaking Java wrappers around high-performant C/C++ libraries such as OpenCV and ffmpeg.
