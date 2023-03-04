@@ -14,81 +14,81 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
-import com.zakgof.jnbenchmark.bridj.BridjBenchmark;
-import com.zakgof.jnbenchmark.java.JustJava;
-import com.zakgof.jnbenchmark.jna.JnaBenchmark;
-import com.zakgof.jnbenchmark.jna.JnaDirectBenchmark;
-import com.zakgof.jnbenchmark.jni.JavaCppStock;
-import com.zakgof.jnbenchmark.jnr.JnrBenchmark;
-import com.zakgof.jnbenchmark.panama.PanamaBenchmark;
-
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 5, time = 500, timeUnit = TimeUnit.MILLISECONDS)
 @Measurement(iterations = 10, time = 500, timeUnit = TimeUnit.MILLISECONDS)
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class JmhGetSystemTimeSeconds {
-	
-	private PanamaBenchmark panama;
+public class JmhGetSystemTimeSeconds extends BenchmarkBase {
 
 	@Setup(Level.Trial)
     public void setup() {
-		panama = new PanamaBenchmark();
+		super.setup();
     }
 
 	@TearDown
 	public void dispose() {
-		panama.dispose();
+		super.dispose();
 	}
 
 	@Benchmark
-	public void java_localdatetime() throws InterruptedException {
-		JustJava.java_ldt();
+	public void bridj_alloc() throws InterruptedException {
+		secsBridj.getSeconds_alloc();
 	}
 
 	@Benchmark
-	public void java_calendar() throws InterruptedException {
-		JustJava.java_calendar();
+	public void java_calendar_alloc() throws InterruptedException {
+		secsJavaCalendar.getSeconds_alloc();
+	}
+
+	@Benchmark
+	public void java_date_alloc() throws InterruptedException {
+		secsJavaDate.getSeconds_alloc();
+	}
+
+	@Benchmark
+	public void java_localDateTime_alloc() throws InterruptedException {
+		secsJavaLdt.getSeconds_alloc();
+	}
+
+	@Benchmark
+	public void java_systemMs_preAlloc() throws InterruptedException {
+		secsJavaSystemMs.getSeconds_preAlloc();
+	}
+
+	@Benchmark
+	public void jna_alloc() throws InterruptedException {
+		secsJna.getSeconds_alloc();
+	}
+
+	@Benchmark
+	public void jni_javaCpp_alloc() throws InterruptedException {
+		secsJavaCppStock.getSeconds_alloc();
+	}
+
+	@Benchmark
+	public void jni_javaCpp_preAlloc() throws InterruptedException {
+		secsJavaCppStock.getSeconds_preAlloc();
 	}
 	
 	@Benchmark
-	public void java_date() throws InterruptedException {
-		JustJava.java_date();
+	public void jnaDirect_alloc() throws InterruptedException {
+		secsJnaDirect.getSeconds_alloc();
 	}
 
 	@Benchmark
-	public void jni_javacpp() throws InterruptedException {
-		JavaCppStock.all();
+	public void jnr_alloc() throws InterruptedException {
+		secsJnr.getSeconds_alloc();
 	}
 
 	@Benchmark
-	public void jna() throws InterruptedException {
-		JnaBenchmark.all();
-	}
-	
-	@Benchmark
-	public void jnaDirect() throws InterruptedException {
-		JnaDirectBenchmark.all();
+	public void panama_alloc() throws InterruptedException {
+		secsPanama.getSeconds_alloc();
 	}
 
 	@Benchmark
-	public void jnr() throws InterruptedException {
-		JnrBenchmark.all();
-	}
-
-	@Benchmark
-	public void bridj() throws InterruptedException {
-		BridjBenchmark.all();
-	}
-	
-	@Benchmark
-	public void panama_prelayout() throws InterruptedException {
-		panama.allWithPreLayout();
-	}
-	
-	@Benchmark
-	public void panama() throws InterruptedException {
-		panama.all();
+	public void panama_preAlloc() throws InterruptedException {
+		secsPanama.getSeconds_preAlloc();
 	}
 
 }

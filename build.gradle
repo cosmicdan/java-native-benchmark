@@ -13,22 +13,22 @@ dependencies {
     implementation 'org.bytedeco:systems-platform:1.5.8'
     implementation 'net.java.dev.jna:jna-platform:5.13.0'
     implementation 'com.github.jnr:jnr-ffi:2.2.13'
-	implementation 'com.nativelibs4java:bridj:0.7.0'
+    implementation 'com.nativelibs4java:bridj:0.7.0'
 }
 
 // foreign stuff is in preview now, not incubating
 tasks.withType(JavaCompile) {
     options.compilerArgs += "--enable-preview"
-	options.compilerArgs += "--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED"
+    options.compilerArgs += "--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED"
 }
 tasks.withType(Test) {
     jvmArgs += "--enable-preview"
-	jvmArgs += '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED'
+    jvmArgs += '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED'
 }
 tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
-	jvmArgs += '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED'
-	jvmArgs += '--enable-native-access=ALL-UNNAMED'
+    jvmArgs += '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED'
+    jvmArgs += '--enable-native-access=ALL-UNNAMED'
 }
 
 // additional fixes for jmh
@@ -37,6 +37,15 @@ jmhRunBytecodeGenerator {
 }
 
 jmh {
-    duplicateClassesStrategy = DuplicatesStrategy.WARN
+    duplicateClassesStrategy = DuplicatesStrategy.INCLUDE
     jvmArgsAppend = ['-Djmh.separateClasspathJAR=true', '--enable-preview', '--add-exports=java.base/jdk.internal.foreign=ALL-UNNAMED', '--enable-native-access=ALL-UNNAMED']
+    
+    // default test
+    //iterations = 5
+    //fork = 5
+    //warmupIterations = 5
+ 
+    // test
+    //includes = ['(panama|jni_javacpp|java_)']
+    //includes = ['_preAlloc|panama']
 }
