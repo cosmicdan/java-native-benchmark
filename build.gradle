@@ -49,3 +49,12 @@ jmh {
     //includes = ['(panama|jni_javacpp|java_)']
     //includes = ['_preAlloc|panama']
 }
+
+task jmhOneshot {
+    doFirst {
+        jmh.iterations = 1
+        jmh.fork = 1
+        jmh.warmupIterations = 0
+    }
+    finalizedBy 'jmh'
+}
