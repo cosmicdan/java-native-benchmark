@@ -58,3 +58,12 @@ task jmhOneshot {
     }
     finalizedBy 'jmh'
 }
+
+task jmhLong {
+    doFirst {
+        jmh.iterations = 10
+        jmh.fork = 5
+        jmh.warmupIterations = 15
+    }
+    finalizedBy 'jmh'
+}
