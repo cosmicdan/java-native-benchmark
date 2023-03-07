@@ -1,0 +1,5 @@
+Regarding all three tests on the m5 and the i7's I tested...
+
+ - The 9700k is at least twice as fast as the m5 6Y57 in every case, many multiples faster in some cases (still not bad for a 12W CPU);
+ - JNI still slightly outperforms Panama in the case of primitive getters/setters. However, Panama outperforms JNI when returning the SYSTEMTIME struct on lower end hardware. For the 9700k, Panama is immeasurably slower;
+ - Panama gets faster at allocating memory for the same struct over time. JNI does not. This suggests Panama might be faster with off-heap memory-intensive operations.
